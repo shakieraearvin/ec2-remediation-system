@@ -34,16 +34,17 @@ When an EC2 instance fails:
 ## ⚙️ Implementation Steps
 1. **Scoped Application Setup**  
 2. **Custom Tables** (EC2 Instance + Remediation Log)  
-3. **AWS Integration Configuration**  
+3. **AWS Integration Configuration** (Credentials, HTTP Connection, Connection Alias)  
 4. **UI Action & Script Include Setup**  
-5. **Flow Designer Workflow** (Trigger on OFF status)  
+5. **Flow Designer Workflow** (Trigger on OFF status, Incident Creation, AI Search, Variables, Slack Message)  
 6. **Knowledge Base Article Creation**  
+7. **Validation with Logs** (Remediation Log + Outbound HTTP Logs)  
 
 ---
 
 ## 🖼️ Architecture Diagram
 ![Architecture Diagram](Diagram.png)  
-*Figure 1: Full workflow for EC2 monitoring and remediation system.*
+*Figure 1: End-to-end workflow for EC2 monitoring and remediation system.*
 
 ---
 
@@ -64,47 +65,91 @@ When an EC2 instance fails:
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots  
 
-### 1. EC2 Instance Table  
-![EC2 Table Placeholder](screenshots/ec2_table.png)  
+### 1. AWS Integration Setup  
+
+**1a. Basic Auth Credentials**  
+![AWS Credentials](./screenshots/aws_credentials.png)  
+*Configured AWS Integration Server credentials to securely authenticate API requests.*  
+
+**1b. HTTP Connection**  
+![AWS Connection](./screenshots/aws_connection.png)  
+*Configured HTTPS connection to the AWS Integration Server endpoint for remediation calls.*  
+
+**1c. Connection & Credential Alias**  
+![AWS Alias](./screenshots/aws_alias.png)  
+*Mapped the AWS connection and credentials into a reusable alias for workflows and UI actions.*  
+
+---
+
+### 2. EC2 Instance Table  
+![EC2 Table](./screenshots/ec2_table.png)  
 *Displays auto-populated EC2 instance records with instance ID, name, and current status (ON/OFF).*
 
-### 2. Remediation Log Table  
-![Remediation Log Placeholder](screenshots/remediation_log.png)  
-*Tracks all remediation attempts with request payloads, responses, success/failure flags, and timestamps.*
+---
 
 ### 3. Flow Designer Workflow  
-![Flow Designer Placeholder](screenshots/flow_designer.png)  
-*Workflow that triggers on EC2 status = OFF, creates incidents, retrieves KB articles, and sends Slack notifications.*
 
-#### 3a. AI Search Custom Action  
-![AI Search Placeholder](screenshots/ai_search.png)  
-*Configuration of the AI Search action that retrieves Knowledge Base articles during incident workflows.*
+**3a. Workflow Overview**  
+![Flow Designer](./screenshots/flow_designer.png)  
+*End-to-end Flow Designer workflow triggered when an EC2 instance status = OFF.*  
 
-#### 3b. Set Flow Variables  
-![Set Variables Placeholder](screenshots/set_variables.png)  
-*Step showing how flow variables are set and passed through the workflow.*
+**3b. Trigger Setup**  
+![Flow Trigger](./screenshots/flow_trigger.png)  
+*Trigger configured on the EC2 Instance table when instance status = OFF.*  
 
-#### 3c. Message Step  
-![Message Placeholder](screenshots/message_step.png)  
-*Slack message step showing how notifications with KB links are delivered to the DevOps channel.*
+**3c. Incident Record Creation**  
+![Incident Record](./screenshots/incident_record.png)  
+*Creates a high-priority incident automatically when a failed EC2 instance is detected.*  
+
+**3d. AI Search Custom Action**  
+![AI Search](./screenshots/ai_search.png)  
+*AI Search retrieves remediation instructions from the Knowledge Base using EC2-related keywords.*  
+
+**3e. Set Flow Variables**  
+![Set Variables](./screenshots/set_variables.png)  
+*Flow variables populated with instance details, KB link, and remediation data.*  
+
+**3f. Message Step**  
+![Message Step](./screenshots/message_step.png)  
+*Slack message step configured to notify DevOps engineers with incident details and KB guidance.*  
+
+---
 
 ### 4. Incident Record  
-![Incident Record Placeholder](screenshots/incident_record.png)  
-*Automatically created ServiceNow incident linked to the failed EC2 instance.*
+![Incident Record](./screenshots/incident_record.png)  
+*Incident automatically created in ServiceNow linking the failed EC2 instance to DevOps operations.*  
+
+---
 
 ### 5. Slack Notification  
-![Slack Notification Placeholder](screenshots/slack_notification.png)  
-*Message posted to the DevOps Slack channel with remediation guidance and incident details.*
+![Slack Notification](./screenshots/slack_notification.png)  
+*Slack notification posted to DevOps channel containing remediation details and incident reference.*  
+
+---
 
 ### 6. UI Action – Trigger EC2 Remediation  
-![UI Action Placeholder](screenshots/ui_action.png)  
-*One-click remediation button on the EC2 Instance record form.*
+![UI Action](./screenshots/ui_action.png)  
+*One-click remediation button added to the EC2 Instance record form for engineers to restart instances directly.*  
 
-### 7. System & HTTP Logs  
-![System Logs Placeholder](screenshots/system_logs.png)  
-*Logs showing AI Search execution, Slack webhook delivery, and AWS API call results.*
+---
+
+### 7. Knowledge Base Article  
+![Knowledge Base](./screenshots/knowledge_base_article.png)  
+*Knowledge Base article containing EC2 remediation steps. Indexed keywords allow AI Search to find it automatically.*  
+
+---
+
+### 8. Remediation Log Table  
+![Remediation Log](./screenshots/remediation_log.png)  
+*Custom log table capturing remediation attempts, HTTP codes, request/response payloads, success flags, and timestamps.*  
+
+---
+
+### 9. Outbound HTTP Logs  
+![Outbound HTTP Logs](./screenshots/outbound_http_logs.png)  
+*System logs verifying ServiceNow executed outbound API calls to AWS and Slack during remediation.*  
 
 ---
 
