@@ -1,92 +1,111 @@
-# ec2-remediation-system
-# EC2 Monitoring and Remediation System – ServiceNow Implementation
-
-## System Overview
-This project delivers a **semi-automated incident response system** for Netflix’s DevOps team to quickly detect and remediate failing AWS EC2 instances.  
-The solution integrates **AWS Integration Server**, **ServiceNow custom tables**, **Flow Designer workflows**, **AI-powered knowledge retrieval**, and **Slack notifications**.  
-
-When an EC2 instance goes down:
-- The **AWS Integration Server** updates ServiceNow every minute with instance health status.  
-- If an instance is marked **OFF**, the **Flow Designer workflow** automatically:  
-  - Creates an **incident record**.  
-  - Runs **AI Search** to retrieve remediation guidance from the Knowledge Base.  
-  - Sends a **Slack notification** to the DevOps channel with remediation steps.  
-- Engineers can take immediate action using a **one-click remediation interface** in ServiceNow, which calls the **AWS Integration Server API** to restart the instance.  
-- All remediation attempts are logged in the **Remediation Log table** for auditing.  
+# 🚀 EC2 Monitoring and Remediation System  
+*ServiceNow Implementation for Netflix DevOps*
 
 ---
 
-## Implementation Steps
-Key implementation decisions and integrations include:
+## 📌 System Overview
+This project delivers a **semi-automated incident response system** that helps Netflix’s DevOps team quickly detect and remediate failing AWS EC2 instances.  
 
-1. **Scoped Application Setup**
-   - Application name: `EC2 Monitoring and Remediation`  
-   - Auto-generated scope: `x_snc_ec2_monito_0`  
+When an EC2 instance fails:  
+✅ The **AWS Integration Server** updates ServiceNow every minute with instance status.  
+✅ **Flow Designer** triggers on `status = OFF` to:  
+- Create an **incident record**  
+- Run **AI Search** to retrieve Knowledge Base guidance  
+- Send a **Slack notification** with remediation steps  
 
-2. **Custom Tables**
-   - **EC2 Instance**: Stores instance ID, name, and status (`ON`/`OFF`).  
-   - **Remediation Log**: Tracks all remediation attempts with payloads, responses, and results.  
-
-3. **AWS Integration**
-   - **Connection & Credential Alias**: `AWS Integration Server C C Alias`  
-   - **Connection**: `AWS Integration Server Connection`  
-   - **Credentials**: Basic Authentication  
-
-4. **UI Action and Script Include**
-   - **UI Action**: `Trigger EC2 Remediation` (adds a button to the EC2 Instance form).  
-   - **Script Include**: `EC2RemediationHelper` (calls AWS API via Integration Server).  
-
-5. **Flow Designer Workflow**
-   - Trigger: EC2 Instance status changes to **OFF**.  
-   - Actions:  
-     - Create incident.  
-     - Run AI Search to retrieve KB article.  
-     - Send Slack notification with remediation guidance.  
-
-6. **Knowledge Base Content**
-   - Article: *“Run the UI Action ‘Trigger EC2 Remediation’ on the associated record.”*  
-   - Keywords: EC2, AWS, server, restart, reboot, instance, cloud.  
+✅ Engineers can then use a **one-click remediation button** in ServiceNow to call the AWS Integration Server API and restart the instance.  
+✅ Every attempt is recorded in the **Remediation Log table** for auditing.  
 
 ---
 
-## Architecture Diagram
-Below is the system workflow diagram (see `Diagram.png` in repo):  
-
-![Architecture Diagram](Diagram.png)
-
----
-
-## Optimization
-To ensure reliability and efficiency, the following improvements were applied:  
-- **AI Search Logging** enabled for transparency of KB retrieval.  
-- **Audit trail** implemented through System Logs, HTTP Logs, and the Remediation Log table.  
-- **Force Save** used in Flow Designer to capture all workflow components in the update set.  
-- **Slack webhook security** ensured by removing the token before pushing to GitHub.  
+## 🛠️ Technologies Used
+- **AWS EC2** – Cloud infrastructure powering Netflix’s services  
+- **AWS Integration Server** – Health monitoring + API gateway for remediation  
+- **ServiceNow Scoped Application** – EC2 Monitoring & Remediation (scope: `x_snc_ec2_monito_0`)  
+- **ServiceNow Flow Designer** – Automated workflows for incidents, AI Search, and Slack notifications  
+- **ServiceNow UI Action & Script Include** – One-click remediation (`Trigger EC2 Remediation` + `EC2RemediationHelper`)  
+- **AI Search** – Intelligent knowledge retrieval for remediation guidance  
+- **Slack Webhooks** – Real-time DevOps notifications  
+- **Custom Tables** – `EC2 Instance` + `Remediation Log`  
+- **System/HTTP Logs** – Audit trail of incidents, API calls, and remediation attempts  
 
 ---
 
-## DevOps Usage
-For Netflix DevOps engineers:  
-
-1. **Monitor EC2 Status**
-   - The EC2 Instance table updates every minute with the latest status.  
-
-2. **Receive Notifications**
-   - If an instance goes **OFF**, you’ll receive a **Slack notification** with remediation guidance and an **incident will be created** in ServiceNow.  
-
-3. **Perform Remediation**
-   - Open the affected EC2 Instance record in ServiceNow.  
-   - Click **Trigger EC2 Remediation**.  
-   - The system calls the AWS Integration Server API to restart the instance.  
-
-4. **Review Logs**
-   - Remediation attempts are tracked in the **Remediation Log**.  
-   - System/HTTP logs provide additional traceability.  
-
-5. **Knowledge Base Support**
-   - Use AI Search to find recommended remediation steps during incidents.  
+## ⚙️ Implementation Steps
+1. **Scoped Application Setup**  
+2. **Custom Tables** (EC2 Instance + Remediation Log)  
+3. **AWS Integration Configuration**  
+4. **UI Action & Script Include Setup**  
+5. **Flow Designer Workflow** (Trigger on OFF status)  
+6. **Knowledge Base Article Creation**  
 
 ---
 
-## Screenshots
-*(Insert screenshots here of your ServiceNow tables, Flow Designer workflow, Slack notifications, incident records, and remediation logs.)*
+## 🖼️ Architecture Diagram
+![Architecture Diagram](Diagram.png)  
+*Figure 1: Full workflow for EC2 monitoring and remediation system.*
+
+---
+
+## 🔧 Optimization
+- Enabled **AI Search Logging** for transparency  
+- Implemented **audit trail** with System Logs + HTTP Logs  
+- Used **Force Save** in Flow Designer to capture all workflow components  
+- Removed **Slack webhook token** before publishing to GitHub for security  
+
+---
+
+## 👨‍💻 DevOps Usage
+1. **Monitor EC2 Status** (EC2 Instance table)  
+2. **Receive Notifications** (Slack alerts + Incident creation)  
+3. **Perform Remediation** (UI Action → AWS API call)  
+4. **Review Logs** (Remediation Log + System/HTTP logs)  
+5. **Use Knowledge Base** (AI Search for remediation steps)  
+
+---
+
+## 📸 Screenshots
+
+### 1. EC2 Instance Table  
+![EC2 Table Placeholder](screenshots/ec2_table.png)  
+*Displays auto-populated EC2 instance records with instance ID, name, and current status (ON/OFF).*
+
+### 2. Remediation Log Table  
+![Remediation Log Placeholder](screenshots/remediation_log.png)  
+*Tracks all remediation attempts with request payloads, responses, success/failure flags, and timestamps.*
+
+### 3. Flow Designer Workflow  
+![Flow Designer Placeholder](screenshots/flow_designer.png)  
+*Workflow that triggers on EC2 status = OFF, creates incidents, retrieves KB articles, and sends Slack notifications.*
+
+#### 3a. AI Search Custom Action  
+![AI Search Placeholder](screenshots/ai_search.png)  
+*Configuration of the AI Search action that retrieves Knowledge Base articles during incident workflows.*
+
+#### 3b. Set Flow Variables  
+![Set Variables Placeholder](screenshots/set_variables.png)  
+*Step showing how flow variables are set and passed through the workflow.*
+
+#### 3c. Message Step  
+![Message Placeholder](screenshots/message_step.png)  
+*Slack message step showing how notifications with KB links are delivered to the DevOps channel.*
+
+### 4. Incident Record  
+![Incident Record Placeholder](screenshots/incident_record.png)  
+*Automatically created ServiceNow incident linked to the failed EC2 instance.*
+
+### 5. Slack Notification  
+![Slack Notification Placeholder](screenshots/slack_notification.png)  
+*Message posted to the DevOps Slack channel with remediation guidance and incident details.*
+
+### 6. UI Action – Trigger EC2 Remediation  
+![UI Action Placeholder](screenshots/ui_action.png)  
+*One-click remediation button on the EC2 Instance record form.*
+
+### 7. System & HTTP Logs  
+![System Logs Placeholder](screenshots/system_logs.png)  
+*Logs showing AI Search execution, Slack webhook delivery, and AWS API call results.*
+
+---
+
+✨ With this system, Netflix’s DevOps team can resolve EC2 failures faster, reduce downtime, and protect streaming quality for millions of viewers worldwide.  
